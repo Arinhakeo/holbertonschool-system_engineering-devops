@@ -1,59 +1,73 @@
-# Simple Web Infrastructure
+# Simple Web Stack
 
-## Diagram
-Requête Utilisateur
-      |
-      v
-+-----------------+
-|  Serveur Web    |  (Nginx)
-+--------+--------+
-         |
-         v
-+--------+--------+
-|  Serveur        |  (Serveur d'Application)
-|  d'Application  |
-+--------+--------+
-         |
-         v
-+--------+--------+
-|  Base de        |  (MySQL)
-|  Données        |
-+-----------------+
+## Infrastructure Design
 
-## Explanation of the Infrastructure
+https://imgur.com/a/v6KStrM
 
-### Components and Their Roles
-1. **Server**:
-   - Hosts the web server, application server, and database.
-   - Provides the hardware and software environment for running the website.
+![Simple Web Stack](./images/0-simple_web_stack.png)
 
-2. **Web Server (Nginx)**:
-   - Serves static content (HTML, CSS, JS) to users.
-   - Forwards dynamic requests to the application server.
+## Description of Infrastructure
 
-3. **Application Server**:
-   - Handles dynamic content and business logic.
-   - Communicates with the database to retrieve or store data.
+### Components:
+1. 1 Server (8.8.8.8)
+2. 1 Web Server (Nginx)
+3. 1 Application Server
+4. 1 Application Files (Code Base)
+5. 1 Database (MySQL)
+6. Domain name foobar.com with www record
 
-4. **Database (MySQL)**:
-   - Stores and manages data for the application.
-   - Provides a structured way to query and manipulate data.
+### Component Explanations:
 
-5. **Domain Name (`www.foobar.com`)**:
-   - Provides a human-readable address for users to access the website.
-   - The `www` record points to the server IP (`8.8.8.8`).
+#### Server
+- Physical or virtual machine running Linux
+- Hosts all components of the web infrastructure
+- Single point where all services are running
 
-### Communication Flow
-1. The user types `www.foobar.com` in their browser.
-2. The domain name is resolved to the server IP (`8.8.8.8`).
-3. The request reaches the web server (Nginx), which serves static content or forwards dynamic requests to the application server.
-4. The application server processes the request, interacts with the database if needed, and returns the result to the web server.
-5. The web server sends the final response (HTML, JSON, etc.) back to the user’s browser.
+#### Domain Name (www.foobar.com)
+- Provides human-readable address
+- www record is an A record pointing to IP 8.8.8.8
+- Translates domain name to IP address via DNS resolution
 
-### Issues with This Infrastructure
-1. **Single Point of Failure (SPOF)**:
-   - If the server fails, the entire website goes down.
-2. **Downtime During Maintenance**:
-   - The website becomes unavailable during code deployment or server restarts.
-3. **Cannot Scale for High Traffic**:
-   - A single server has limited resources and may become overwhelmed by high traffic.
+#### Web Server (Nginx)
+- Handles HTTP requests
+- Serves static content
+- Manages SSL/TLS termination
+- Routes requests to application server
+
+#### Application Server
+- Executes application logic
+- Processes dynamic content
+- Interacts with database
+- Handles business logic
+
+#### Database (MySQL)
+- Stores application data
+- Manages user information
+- Handles data persistence
+- Provides data retrieval and storage
+
+#### Communication Flow
+- User enters www.foobar.com in browser
+- DNS resolution occurs
+- HTTP/HTTPS request sent to server IP
+- Nginx receives and processes request
+- Application server generates dynamic content
+- Database provides necessary data
+- Response sent back to user
+
+### Infrastructure Issues:
+
+1. SPOF (Single Point of Failure):
+   - Single server hosts all components
+   - No redundancy
+   - Hardware failure = complete outage
+
+2. Maintenance Downtime:
+   - Updates require server restart
+   - No redundancy during maintenance
+   - Service interruption during deployments
+
+3. Scalability Limitations:
+   - Cannot handle high traffic
+   - No load distribution
+   - Resource constraints on single server
